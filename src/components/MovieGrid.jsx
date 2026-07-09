@@ -62,7 +62,7 @@ export default function MovieGrid({
       {isError && (
         <div id="grid-error" className="error-container">
           <i className="fa-solid fa-circle-exclamation error-icon"></i>
-          <p id="error-message">Failed to load content. Please check your network and API keys.</p>
+          <p id="error-message">Failed to load content. Please verify your connection or API keys.</p>
         </div>
       )}
 
