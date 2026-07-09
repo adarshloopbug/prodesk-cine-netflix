@@ -1,36 +1,87 @@
-# Netflix-Lite - Media Discovery SPA
+# Netflix-Lite: Media Discovery Single Page Application (SPA)
 
-Netflix-Lite is a high-performance Single Page Application (SPA) designed to browse popular movies, save favorites, and match user moods using personalized AI suggestions.
+Netflix-Lite is a high-fidelity media discovery application built with **React and Vite**. It consumes live metadata from **The Movie Database (TMDB)** and provides intelligent, mood-based film suggestions powered by **Google Gemini AI**.
 
-## Tech Stack
+---
 
-- **Core Framework**: React 18 & Vite
-- **Styling**: Modern, modular Vanilla CSS (Tailwind-free)
-- **APIs**:
-  - **TMDB REST API** for live media content discovery
-  - **Google Gemini 2.5 Flash API** for real-time vibe & mood movie recommendation matchmaking
+## 🚀 Key Features
 
-## Performance Optimization Highlights
+- 🎬 **Popular Movies Browser**: Display popular movies with posters, release dates, ratings, and runtime metadata.
+- 🔍 **Live Search Input**: Query the TMDB Search database dynamically as you type.
+- 🧠 **AI Mood Matcher**: Describe your vibe or current feelings in natural language and receive movie suggestions directly from Gemini AI.
+- 💖 **My Favorites List**: A persistent, user-curated list of saved movies backed by offline `localStorage` synchronization.
+- ⚙️ **API Configuration Panel**: Simple settings popup to configure and update TMDB and Gemini keys.
+- ⚡ **Performant Architecture**: Optimized client-side performance built directly into the UI components.
 
-- **IntersectionObserver Pagination**: Fluid on-demand infinite scroll hydration that loads consecutive pages seamlessly without memory leaks.
-- **Search input Debouncing**: A custom `useDebounce` hook restricts queries to occur at most once every `500ms` during active typing.
-- **Image Load Animation**: Smooth opacity fade-in effects on film posters when images finish loading.
-- **Lazy Loading**: Native browser-level `loading="lazy"` poster image optimizations.
-- **Offline Persistence**: Syncs user favorites list to `localStorage` for offline persistence.
+---
 
-## Project Setup
+## 🛠️ Performance & Optimizations
 
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
+- 🖱️ **Infinite Scroll (IntersectionObserver)**: Hydrates movie cards dynamically as you scroll down, avoiding DOM clutter and memory leaks.
+- ⏱️ **Debounced Search**: Throttles keyboard input queries by `500ms` via a custom `useDebounce` hook, preventing rate-limiting on TMDB API endpoints.
+- 🖼️ **Native Lazy Loading**: Movie poster elements use browser-native `loading="lazy"` tags.
+- 💫 **Image Fade-In Transitions**: Detects image loading success in React and triggers standard CSS fade-in animations to avoid visual jarring.
+- 🗜️ **Optimized CSS**: Large stylesheets are split into feature-specific components (`src/styles/`) and bundled during compile time.
 
-2. **Run Development Server**:
-   ```bash
-   npm run dev
-   ```
+---
 
-3. **Production Build**:
-   ```bash
-   npm run build
-   ```
+## 📁 Repository Structure
+
+```text
+├── index.html           # Main HTML5 document layout
+├── package.json         # Project manifests and run scripts
+├── vite.config.js       # Vite bundler configurations
+├── README.md            # Main user documentation
+├── prompt.md            # AI prompts and design document details
+└── src/
+    ├── main.jsx         # Bootstraps the React DOM tree
+    ├── App.jsx          # Root component managing global state
+    ├── index.css        # Entry style bundler importing split CSS
+    ├── components/      # Modular visual elements
+    │   ├── DetailsModal.jsx
+    │   ├── FavoritesView.jsx
+    │   ├── Header.jsx
+    │   ├── MoodMatcher.jsx
+    │   ├── MovieCard.jsx
+    │   ├── MovieGrid.jsx
+    │   ├── SettingsModal.jsx
+    │   └── SetupScreen.jsx
+    ├── hooks/           # Custom React hooks
+    │   └── useDebounce.js
+    ├── utils/           # Helper utility libraries
+    │   └── api.js
+    └── styles/          # Modular component CSS styling
+        ├── global.css
+        ├── Header.css
+        ├── Modals.css
+        ├── MoodMatcher.css
+        ├── MovieGrid.css
+        └── Setup.css
+```
+
+---
+
+## ⚙️ Project Setup & Installation
+
+### Prerequisites
+Make sure you have **Node.js** installed locally on your system.
+
+### 1. Install Project Packages
+Execute the command below to install standard dependencies:
+```bash
+npm install
+```
+
+### 2. Launch Local Development Server
+Boot up the Vite local server:
+```bash
+npm run dev
+```
+Open **[http://localhost:8080](http://localhost:8080)** in your browser to view the application.
+
+### 3. Production Bundling & Compilation
+Build files for static hosting:
+```bash
+npm run build
+```
+Vite compiles and places all minified HTML, CSS, and JS assets inside the `/dist` directory.
