@@ -1,0 +1,59 @@
+/* Global & Reset Styles */
+:root {
+  --bg-primary: #141414;
+  --bg-secondary: #1f1f1f;
+  --bg-header: rgba(20, 20, 20, 0.85);
+  --accent: #e50914;
+  --accent-hover: #b80710;
+  --text-main: #ffffff;
+  --text-muted: #aaaaaa;
+  --border-color: #333333;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  --font-display: 'Outfit', 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 16px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: #333333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #444444; }
+
+.view-section, .setup-container { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+button, input { background: none; border: none; color: inherit; font-family: inherit; outline: none; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+.logo, .setup-card h2, .section-title-bar h2, .movie-card-info h4, .empty-state h3, .modal-header h3, #detail-title {
+  font-family: var(--font-display);
+}
+
+.main-content { padding: 100px 4% 50px 4%; min-height: calc(100vh - 120px); max-width: 1400px; margin: 0 auto; }
+
+.app-footer { text-align: center; padding: 40px 20px; border-top: 1px solid var(--border-color); margin-top: 40px; }
+.app-footer p { font-size: 0.8rem; color: var(--text-muted); }
+.app-footer a:hover { text-decoration: underline; }
+
+.hidden { display: none !important; }
+
+@media (max-width: 768px) {
+  .main-content { padding: 85px 15px 50px 15px; }
+}
