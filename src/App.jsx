@@ -10,23 +10,19 @@ import { fetchFromTMDB } from './utils/api';
 import useDebounce from './hooks/useDebounce';
 
 export default function App() {
-  const [keys, setKeys] = useState(() => ({
-    tmdb: localStorage.getItem('tmdb_api_key') || '',
-    gemini: localStorage.getItem('gemini_api_key') || ''
-  }));
-  
+  const [keys, setKeys] = useState(() => {
+    const getVal = (v, k) => (v && !v.includes('api_key_here') ? v : localStorage.getItem(k) || '');
+    return { tmdb: getVal(import.meta.env.VITE_TMDB_API_KEY, 'tmdb_api_key'), gemini: getVal(import.meta.env.VITE_GEMINI_API_KEY, 'gemini_api_key') };
+  });
   const [activeView, setActiveView] = useState('browse');
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-
   const [aiMovieTitle, setAiMovieTitle] = useState('');
-
   const [favorites, setFavorites] = useState(() => JSON.parse(localStorage.getItem('netflix_lite_favorites')) || []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeDetailsId, setActiveDetailsId] = useState(null);
@@ -55,11 +51,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (keys.tmdb) {
-      loadMovies(1, true);
-    } else {
-      setMovies([]);
-    }
+    if (keys.tmdb) loadMovies(1, true);
+    else setMovies([]);
   }, [debouncedSearchQuery, aiMovieTitle, keys.tmdb]);
 
   const handleSaveSettings = (tmdb, gemini) => {
@@ -71,9 +64,7 @@ export default function App() {
 
   const handleToggleFavorite = (movie) => {
     setFavorites(prev => {
-      const updated = prev.some(f => f.id === movie.id)
-        ? prev.filter(f => f.id !== movie.id)
-        : [...prev, movie];
+      const updated = prev.some(f => f.id === movie.id) ? prev.filter(f => f.id !== movie.id) : [...prev, movie];
       localStorage.setItem('netflix_lite_favorites', JSON.stringify(updated));
       return updated;
     });
@@ -89,70 +80,27 @@ export default function App() {
         onSettingsClick={() => setIsSettingsOpen(true)}
         tmdbKeyConfigured={!!keys.tmdb}
       />
-
       <main className="main-content">
         {!keys.tmdb ? (
           <SetupScreen onSettingsClick={() => setIsSettingsOpen(true)} />
         ) : activeView === 'browse' ? (
           <section id="browser-view" className="view-section">
-            <MoodMatcher
-              geminiApiKey={keys.gemini}
-              onAiRecommendation={(title) => { setSearchQuery(''); setAiMovieTitle(title); }}
-            />
+            <MoodMatcher geminiApiKey={keys.gemini} onAiRecommendation={(title) => { setSearchQuery(''); setAiMovieTitle(title); }} />
             <div className="section-title-bar">
-              <h2>
-                {debouncedSearchQuery
-                  ? `Search Results for "${debouncedSearchQuery}"`
-                  : aiMovieTitle
-                  ? `AI Recommendation: "${aiMovieTitle}"`
-                  : 'Popular Movies'}
-              </h2>
-              {(debouncedSearchQuery || aiMovieTitle) && (
-                <button className="text-btn" onClick={() => { setSearchQuery(''); setAiMovieTitle(''); }}>
-                  Back to Browse
-                </button>
-              )}
+              <h2>{debouncedSearchQuery ? `Search Results for "${debouncedSearchQuery}"` : aiMovieTitle ? `AI Recommendation: "${aiMovieTitle}"` : 'Popular Movies'}</h2>
+              {(debouncedSearchQuery || aiMovieTitle) && <button className="text-btn" onClick={() => { setSearchQuery(''); setAiMovieTitle(''); }}>Back to Browse</button>}
             </div>
-            <MovieGrid
-              movies={movies}
-              favorites={favorites}
-              onMovieClick={setActiveDetailsId}
-              onToggleFavorite={handleToggleFavorite}
-              isLoading={isLoading}
-              isError={isError}
-              onLoadMore={() => loadMovies(currentPage)}
-              hasMore={hasMore}
-            />
+            <MovieGrid movies={movies} favorites={favorites} onMovieClick={setActiveDetailsId} onToggleFavorite={handleToggleFavorite} isLoading={isLoading} isError={isError} onLoadMore={() => loadMovies(currentPage)} hasMore={hasMore} />
           </section>
         ) : (
-          <FavoritesView
-            favorites={favorites}
-            onMovieClick={setActiveDetailsId}
-            onToggleFavorite={handleToggleFavorite}
-            onBackToBrowse={() => setActiveView('browse')}
-          />
+          <FavoritesView favorites={favorites} onMovieClick={setActiveDetailsId} onToggleFavorite={handleToggleFavorite} onBackToBrowse={() => setActiveView('browse')} />
         )}
       </main>
-
       <footer className="app-footer">
         <p>&copy; 2026 Netflix-Lite. Powered by <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TMDB API</a> & <a href="https://ai.google.dev/" target="_blank" rel="noopener">Google Gemini</a>.</p>
       </footer>
-
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        tmdbKey={keys.tmdb}
-        geminiKey={keys.gemini}
-        onSave={handleSaveSettings}
-      />
-
-      <DetailsModal
-        movieId={activeDetailsId}
-        apiKey={keys.tmdb}
-        onClose={() => setActiveDetailsId(null)}
-        favorites={favorites}
-        onToggleFavorite={handleToggleFavorite}
-      />
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} tmdbKey={keys.tmdb} geminiKey={keys.gemini} onSave={handleSaveSettings} />
+      <DetailsModal movieId={activeDetailsId} apiKey={keys.tmdb} onClose={() => setActiveDetailsId(null)} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
     </>
   );
 }
